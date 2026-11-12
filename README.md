@@ -1,4 +1,4 @@
-# ui-kit-aggregator-mcp
+# UI Kit Aggregator MCP
 
 UI Kit Aggregator 是一個 Model Context Protocol（MCP）服務。只要你的 AI 程式設計助手支援 MCP，就可以透過它，在搭建概念站、品牌站、落地頁，或需要動效與元件時，到 8 個公開目錄裡搜尋可用的元件、動效片段、安裝方式和運動提示詞。
 
@@ -94,8 +94,8 @@ UI Kit Aggregator 是一個 Model Context Protocol（MCP）服務。只要你的
 先克隆本倉庫，安裝依賴並啟動：
 
 ```bash
-git clone https://github.com/Faixiang/ui-kit-aggregator-mcp
-cd ui-kit-aggregator-mcp
+git clone https://github.com/Faixiang/UI-Kit-Aggregator-MCP
+cd UI-Kit-Aggregator-MCP
 npm install
 npm start
 ```
