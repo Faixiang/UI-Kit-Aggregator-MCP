@@ -9,7 +9,7 @@
 
     <rect x="320" y="120" width="220" height="100" rx="18" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
     <text x="430" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Search catalogs</text>
-    <text x="430" y="194" text-anchor="middle" font-size="14" fill="#475569">8 official sources</text>
+    <text x="430" y="194" text-anchor="middle" font-size="14" fill="#475569">9 official sources</text>
 
     <path d="M550 170 H610" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 

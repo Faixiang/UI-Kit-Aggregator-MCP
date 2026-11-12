@@ -129,8 +129,8 @@ test("live stdio server gates real official content", { timeout: 180_000 }, asyn
     assert.deepEqual(toolNames, ["check_compliance", "get_item", "get_license", "list_sources", "search_ui_kits"]);
 
     const sources = await callToolStable(client, { name: "list_sources", arguments: {} });
-    assert.equal(sources.sources?.length, 8);
-    report.push({ call: "list_sources", status: "allowed", sources: 8 });
+    assert.equal(sources.sources?.length, 9);
+    report.push({ call: "list_sources", status: "allowed", sources: 9 });
 
     const search = await callToolStable(client, {
       name: "search_ui_kits",
@@ -289,6 +289,50 @@ test("live stdio server gates real official content", { timeout: 180_000 }, asyn
     assert.match(bitsPro.compliance?.reason ?? "", /React Bits Pro/);
     assert.match(bitsPro.compliance?.reason ?? "", /REACTBITS_LICENSE_KEY/);
     assert.match(bitsPro.compliance?.reason ?? "", /configure\/add the token, or skip this item/i);
+
+    const referoSearch = await callToolStable(client, {
+      name: "search_ui_kits",
+      arguments: { query: "fintech", sources: ["refero-styles"], limit: 3 },
+    });
+    record("search_ui_kits refero-styles fintech", referoSearch);
+    assert.ok((referoSearch.hits?.length ?? 0) >= 1, "search should return a public Refero Styles hit");
+    assert.equal(referoSearch.hits?.[0]?.compliance?.status, "allowed");
+    assert.match(referoSearch.hits?.[0]?.officialUrl ?? "", /styles\.refero\.design\/style\//);
+    assert.equal(/Style Reference/.test(JSON.stringify(referoSearch.hits?.[0]?.content ?? "")), false);
+
+    let referoItem: ToolPayload | undefined;
+    for (const hit of referoSearch.hits ?? []) {
+      if (!hit.itemId) continue;
+      const candidate = await callToolStable(client, {
+        name: "get_item",
+        arguments: {
+          source: "refero-styles",
+          id: hit.itemId,
+          intendedUse: "use this DESIGN.md in a client marketing site",
+        },
+      });
+      record(`get_item refero-styles ${hit.itemId}`, candidate);
+      if (
+        (candidate.compliance?.status === "allowed" || candidate.compliance?.status === "flagged") &&
+        candidate.content !== undefined
+      ) {
+        referoItem = candidate;
+        break;
+      }
+    }
+    assert.ok(referoItem, `Refero Styles get_item should return a public DESIGN.md body.\n${JSON.stringify(report, null, 2)}`);
+    assert.match(JSON.stringify(referoItem.content ?? {}), /Style Reference|designMd/);
+    assert.equal(JSON.stringify(referoItem.content ?? {}).includes("api.refero.design"), false);
+
+    const referoPaid = await callToolStable(client, {
+      name: "get_item",
+      arguments: { source: "refero-styles", id: "paid:design-md" },
+    });
+    record("get_item refero-styles paid without fetching", referoPaid);
+    assert.equal(referoPaid.compliance?.status, "blocked");
+    assert.notEqual(referoPaid.compliance?.status, "needs_token");
+    assert.equal(referoPaid.content, undefined);
+    assert.equal(/configure\/add the token|add a token/i.test(JSON.stringify(referoPaid)), false);
 
     const license = await callToolStable(client, {
       name: "get_license",

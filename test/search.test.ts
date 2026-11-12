@@ -29,14 +29,14 @@ function deps(fetchImpl: typeof fetch): Deps {
   return { env, net: createNet(env, fetchImpl, () => 1_000), fetchImpl };
 }
 
-test("list_sources names all eight libraries and their licenses", () => {
+test("list_sources names all nine libraries and their licenses", () => {
   const listed = createHandlers(deps(async () => {
     throw new Error("list_sources must not use the network");
   })).listSources();
-  assert.equal(listed.sources.length, 8);
+  assert.equal(listed.sources.length, 9);
   assert.deepEqual(
     listed.sources.map((source) => source.id),
-    ["motionsites", "react-bits", "uiverse", "anime", "aceternity", "motion-prompt", "cult-ui", "magic-ui"],
+    ["motionsites", "react-bits", "uiverse", "anime", "aceternity", "motion-prompt", "cult-ui", "magic-ui", "refero-styles"],
   );
   for (const source of listed.sources) {
     assert.equal(source.compliance.status, "allowed");
@@ -55,6 +55,12 @@ test("list_sources names all eight libraries and their licenses", () => {
   assert.match(listed.sources[6]?.specialty ?? "", /not a general animation engine/i);
   assert.match(listed.sources[7]?.specialty ?? "", /official free \/ MIT catalog only/i);
   assert.match(listed.sources[7]?.specialty ?? "", /do not use this source for Magic UI Pro/i);
+  assert.match(listed.sources[8]?.specialty ?? "", /official catalog of AI-readable design systems/i);
+  assert.match(listed.sources[8]?.specialty ?? "", /DESIGN\.md/i);
+  assert.match(listed.sources[8]?.specialty ?? "", /Cursor and Claude Code/i);
+  assert.equal(listed.sources[8]?.licenseName, "Refero Terms of Use");
+  assert.match(listed.sources[8]?.licenseUrl ?? "", /doc\.refero\.design\/legal\/terms-of-use/);
+  assert.deepEqual(listed.sources[8]?.authEnv, []);
 });
 
 test("search returns gated React Bits metadata and does not inline source", async () => {
@@ -421,6 +427,154 @@ test("Magic UI search returns free MIT items and Pro ids are blocked without cal
   assert.equal(calls.some((url) => url.includes("pro.magicui.design")), false);
 });
 
+test("Refero Styles searches public listings and gates DESIGN.md bodies", async () => {
+  const intercomId = "12255b63-e506-4bc1-a4cd-d05487de32f3";
+  const columnId = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+  const designMd = `# Intercom — Style Reference
+> Warm cream editorial spread
+
+**Theme:** light
+
+## Tokens — Colors
+
+Electric Violet #0007cb on a warm cream canvas. Use this DESIGN.md as reference for a marketing site.
+Saans at weight 300. Sharp 4px corners. This paragraph exists so the public body is long enough to keep.
+`;
+  const calls: string[] = [];
+  const pages: Record<string, string> = {
+    "https://styles.refero.design/": listingHtml([
+      {
+        id: intercomId,
+        url: "https://intercom.com",
+        siteName: "Intercom",
+        northStar: "Warm cream editorial spread",
+        colorScheme: "light",
+        colors: [{ name: "Electric Violet", hex: "#0007cb" }],
+        fonts: ["Saans"],
+      },
+    ]),
+    "https://styles.refero.design/sitemaps/collections.xml": `<?xml version="1.0"?><urlset>
+      <url><loc>https://styles.refero.design/design-styles/fintech-websites</loc></url>
+      <url><loc>https://styles.refero.design/ai-agents/design-prompts</loc></url>
+    </urlset>`,
+    "https://styles.refero.design/design-styles/fintech-websites": listingHtml([
+      {
+        id: columnId,
+        url: "https://column.com",
+        siteName: "Column",
+        northStar: "deep navy ledger under cool dawn",
+        colorScheme: "light",
+        colors: [{ name: "Navy", hex: "#0b1f33" }],
+        fonts: ["GT America"],
+      },
+    ]),
+    [`https://styles.refero.design/style/${intercomId}`]: `<title>Intercom design system | Refero Styles</title><pre><code>${designMd}</code></pre>`,
+    [`https://styles.refero.design/style/${columnId}`]: `<title>Column design system | Refero Styles</title>
+      <pre><code># Column — Style Reference
+> deep navy ledger
+
+## Tokens — Colors
+
+Navy #0b1f33. Copyright (c) Saans Foundry must stay on this reconstruction.
+${"Spacing rhythm stays editorial. ".repeat(8)}</code></pre>`,
+  };
+  const fetchImpl: typeof fetch = async (input) => {
+    const url = String(input);
+    calls.push(url);
+    const body = pages[url];
+    if (body === undefined) return new Response(`missing ${url}`, { status: 404 });
+    return new Response(body, { status: 200, headers: { "content-type": "text/html" } });
+  };
+  const handlers = createHandlers(deps(fetchImpl));
+  const found = await handlers.search({ query: "intercom cream", sources: ["refero-styles"], limit: 3 });
+  assert.equal(found.errors.length, 0);
+  assert.equal(found.hits[0]?.itemId, intercomId);
+  assert.equal(found.hits[0]?.compliance.status, "allowed");
+  assert.equal(found.hits[0]?.officialUrl, `https://styles.refero.design/style/${intercomId}`);
+  assert.equal(JSON.stringify(found.hits[0]).includes("Electric Violet #0007cb on a warm cream canvas"), false);
+  assert.equal(calls.some((url) => url.includes("/api/") || url.includes("api.refero.design")), false);
+  assert.equal(calls.some((url) => url.includes("/ai-agents/")), false);
+
+  const fintech = await handlers.search({ query: "fintech navy", sources: ["refero-styles"], limit: 3 });
+  assert.equal(fintech.errors.length, 0);
+  assert.ok(fintech.hits.some((hit) => hit.itemId === columnId));
+  assert.equal(calls.some((url) => url.includes("/design-styles/fintech-websites")), true);
+  assert.equal(calls.some((url) => url.includes("/ai-agents/")), false);
+
+  const item = await handlers.getItem({
+    source: "refero-styles",
+    id: intercomId,
+    intendedUse: "use this DESIGN.md in a client marketing site",
+  });
+  assert.equal(item.compliance && "status" in item.compliance ? item.compliance.status : "", "allowed");
+  assert.match(JSON.stringify(item.content ?? {}), /Warm cream editorial spread/);
+  assert.match(JSON.stringify(item.content ?? {}), /Intercom/);
+  assert.equal(calls.some((url) => url.includes("/api/") || url.includes("api.refero.design")), false);
+
+  const flagged = await handlers.getItem({
+    source: "refero-styles",
+    id: columnId,
+    intendedUse: "use this DESIGN.md in a client marketing site",
+  });
+  assert.equal(flagged.compliance && "status" in flagged.compliance ? flagged.compliance.status : "", "flagged");
+  assert.match(JSON.stringify(flagged.content ?? {}), /Copyright \(c\) Saans Foundry/);
+  assert.match(JSON.stringify(flagged.compliance ?? {}), /Copyright \(c\) Saans Foundry/);
+
+  const secret = "UNIQUE_DESIGN_MD_BODY_DO_NOT_LEAK";
+  const reservedId = "bbbbbbbb-cccc-4ddd-8eee-ffffffffffff";
+  pages[`https://styles.refero.design/style/${reservedId}`] = `<title>Reserved design system | Refero Styles</title><pre><code># Reserved — Style Reference
+> locked preview
+
+## Tokens — Colors
+
+${secret}
+${"Public page withheld the rest of this style reference. ".repeat(6)}
+All rights reserved.
+</code></pre>`;
+  const unclear = await handlers.getItem({ source: "refero-styles", id: reservedId });
+  assert.equal(unclear.compliance && "status" in unclear.compliance ? unclear.compliance.status : "", "blocked");
+  assert.equal("content" in unclear, false);
+  assert.equal(JSON.stringify(unclear).includes(secret), false);
+
+  const republished = await handlers.getItem({
+    source: "refero-styles",
+    id: columnId,
+    intendedUse: "republish this DESIGN.md as a design library",
+  });
+  assert.equal(republished.compliance && "status" in republished.compliance ? republished.compliance.status : "", "blocked");
+  assert.equal("content" in republished, false);
+
+  const paidCalls = calls.length;
+  const paid = await handlers.getItem({ source: "refero-styles", id: "paid:SECRET_DESIGN_MD" });
+  assert.equal(paid.compliance && "status" in paid.compliance ? paid.compliance.status : "", "blocked");
+  assert.notEqual(paid.compliance && "status" in paid.compliance ? paid.compliance.status : "", "needs_token");
+  assert.equal("content" in paid, false);
+  assert.equal("tokenRequest" in paid, false);
+  assert.equal(JSON.stringify(paid).includes("SECRET_DESIGN_MD"), false);
+  assert.equal(/configure\/add the token|add a token/i.test(JSON.stringify(paid)), false);
+  assert.equal(calls.length, paidCalls);
+  assert.match(JSON.stringify(paid), /doc\.refero\.design\/legal\/terms-of-use/);
+
+  const trained = await handlers.checkCompliance({
+    source: "refero-styles",
+    itemId: intercomId,
+    proposedUse: "train a model on this catalog and publish the dataset",
+  });
+  assert.equal(trained.compliance.status, "blocked");
+  const clientSite = await handlers.checkCompliance({
+    source: "refero-styles",
+    itemId: intercomId,
+    proposedUse: "use this DESIGN.md in a client marketing site",
+  });
+  assert.equal(clientSite.compliance.status, "allowed");
+});
+
+function listingHtml(styles: unknown[]): string {
+  const payload = JSON.stringify({ initialPage: { styles, nextCursor: null, nextPage: null } });
+  const push = JSON.stringify([1, payload]);
+  return `<!doctype html><script>self.__next_f.push(${push})</script>`;
+}
+
 test("the MCP server lists tools and has no skip switch", async () => {
   const server = createMcpServer(deps(async () => new Response("{}", { status: 200 })));
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
@@ -438,7 +592,7 @@ test("the MCP server lists tools and has no skip switch", async () => {
   const result = await client.callTool({ name: "list_sources", arguments: {} });
   const text = (result.content as Array<{ text?: string }>).map((part) => part.text ?? "").join("\n");
   const payload = JSON.parse(text) as { sources: unknown[] };
-  assert.equal(payload.sources.length, 8);
+  assert.equal(payload.sources.length, 9);
   await client.close();
   await server.close();
 });

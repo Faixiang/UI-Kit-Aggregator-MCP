@@ -1,6 +1,6 @@
 # Third-party terms
 
-This repository's own code is under the MIT license in `LICENSE`. That grant does **not** cover the eight catalogs. Nothing in this project is a claim of ownership over those works, and this tree does not vendor their source.
+This repository's own code is under the MIT license in `LICENSE`. That grant does **not** cover the nine catalogs. Nothing in this project is a claim of ownership over those works, and this tree does not vendor their source.
 
 The gate quotes the texts below so an agent can show attribution. The quotations are the license files supplied with this project, or clauses read from the public terms pages. If a summary and a linked document ever disagree, the document at the URL wins.
 
@@ -16,6 +16,7 @@ The gate quotes the texts below so an agent can show attribution. The quotations
 | Cult UI | MIT License | https://github.com/nolly-studio/cult-ui/blob/main/LICENSE.md |
 | Magic UI (free registry) | MIT License | https://github.com/magicuidesign/magicui/blob/main/LICENSE.md |
 | Magic UI Pro (not indexed) | Magic UI Pro License | https://pro.magicui.design/license |
+| Refero Styles (public pages) | Refero Terms of Use | https://doc.refero.design/legal/terms-of-use |
 
 ## React Bits (free)
 
@@ -59,3 +60,13 @@ MIT, Copyright (c) 2023 Jordan-Gilliam. Official license file: https://github.co
 MIT, Copyright (c) Magic UI. Official license file: https://github.com/magicuidesign/magicui/blob/main/LICENSE.md (raw: https://raw.githubusercontent.com/magicuidesign/magicui/main/LICENSE.md). Full text in `MAGIC_UI_LICENSE`. Keep the copyright notice with copies. Official free registry index: https://magicui.design/r/registry.json. One free item: `https://magicui.design/r/{name}.json`. Docs map: https://magicui.design/llms.txt. Install: `npx shadcn@latest add @magicui/{name}`.
 
 Magic UI Pro is a separate paid license at https://pro.magicui.design/license. This server does not add, index, fetch, or return Pro catalogs or bodies. Requests for Pro/paid ids are blocked and no request is made to pro.magicui.design.
+
+## Refero Styles
+
+Refero Terms of Use: https://doc.refero.design/legal/terms-of-use (last updated August 3, 2026). Refero Inc. owns the Refero Styles catalog, including the DESIGN.md files it prepares. This project does not own, relicense, or mirror that catalog. Screenshots, logos, trademarks, and product names remain with their respective owners.
+
+Section 10 allows Refero Content to be used for lawful design research, inspiration, internal reference, and ordinary product design work, including commercial end products, and as reference material in client or internal design work. It does not allow resale, redistribution, or syndication of the content; scraping or systematic extraction outside documented download features; model training, fine-tuning, evaluation, or dataset creation; or publishing the catalog as a standalone library or competing product.
+
+The public catalog pages used here are the homepage https://styles.refero.design/, the collection URLs listed in https://styles.refero.design/sitemaps/collections.xml under `/design-styles/` and `/examples/` when the query matches that page, and one style page `https://styles.refero.design/style/{uuid}`. Search returns the public card (name, north star, colors, fonts). `get_item` returns the DESIGN.md printed on that one public page. Full text of the summary shipped with the gate is `REFERO_STYLES_SUMMARY` in `src/compliance/texts.ts`.
+
+The official Refero MCP at https://api.refero.design/mcp is a paid Pro, Team, or Lifetime interface (OAuth or Bearer token). This server does not call it and does not collect a Refero token. Requests that ask for that paid body are blocked, not `needs_token`. The site robots.txt disallows `/api/`, and those routes are behind a bot challenge. This server does not call `https://styles.refero.design/api/`.

@@ -9,6 +9,7 @@ export const SOURCE_IDS = [
   "motion-prompt",
   "cult-ui",
   "magic-ui",
+  "refero-styles",
 ] as const;
 
 export type SourceId = (typeof SOURCE_IDS)[number];

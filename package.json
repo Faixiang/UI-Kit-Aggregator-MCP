@@ -1,7 +1,7 @@
 {
   "name": "ui-kit-aggregator-mcp",
   "version": "0.1.0",
-  "description": "License-gated MCP server that searches MotionSites, React Bits, Uiverse, Anime.js, Aceternity UI, Motion Prompt, Cult UI, and Magic UI for an AI coding agent.",
+  "description": "License-gated MCP server that searches MotionSites, React Bits, Uiverse, Anime.js, Aceternity UI, Motion Prompt, Cult UI, Magic UI, and Refero Styles for an AI coding agent.",
   "type": "module",
   "engines": {
     "node": ">=20"
