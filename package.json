@@ -1,0 +1,40 @@
+{
+  "name": "ui-kit-aggregator-mcp",
+  "version": "0.1.0",
+  "description": "License-gated MCP server that searches MotionSites, React Bits, Uiverse, Anime.js, Aceternity UI, Motion Prompt, Cult UI, and Magic UI for an AI coding agent.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "ui-kit-aggregator-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "LICENSES.md",
+    ".env.example"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "prestart": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "tsx --test test/*.test.ts",
+    "test:unit": "tsx --test test/gate.test.ts test/search.test.ts",
+    "test:e2e": "tsx --test test/e2e.test.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.20.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "license": "MIT"
+}

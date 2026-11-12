@@ -1,0 +1,6 @@
+ui-kit-aggregator-mcp is an index and license gate. It does not own, relicense,
+or redistribute MotionSites, React Bits, Uiverse, Anime.js, Aceternity UI, Motion Prompt, Cult UI, or Magic UI.
+
+Those projects remain under their own terms. See LICENSES.md. Do not commit
+fetched component source, prompt text, or paid registry responses into this
+repository.
