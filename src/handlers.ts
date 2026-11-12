@@ -14,6 +14,8 @@ import {
   MAGIC_UI_LICENSE,
   MAGIC_UI_PRO_TERMS_URL,
   MAGIC_UI_TERMS_URL,
+  REFERO_STYLES_SUMMARY,
+  REFERO_STYLES_TERMS_URL,
   MOTIONSITES_SUMMARY,
   MOTIONSITES_TERMS_URL,
   MOTIONSITES_TERMS_URL_EN,
@@ -37,6 +39,7 @@ import { getAceternityItem, searchAceternity } from "./sources/aceternity.js";
 import { getMotionPromptItem, searchMotionPrompt } from "./sources/motion-prompt.js";
 import { getCultUiItem, searchCultUi } from "./sources/cult-ui.js";
 import { getMagicUiItem, searchMagicUi } from "./sources/magic-ui.js";
+import { getReferoStyleItem, searchReferoStyles } from "./sources/refero-styles.js";
 import { getAnimeItem, searchAnime } from "./sources/anime.js";
 import { getMotionsitesItem, searchMotionsites } from "./sources/motionsites.js";
 import { getReactBitsItem, searchReactBits } from "./sources/react-bits.js";
@@ -151,6 +154,18 @@ const SOURCE_INFO = [
     authEnv: [] as string[],
     summary: "MIT for the official free catalog only. Copyright (c) Magic UI. Keep the copyright notice. Magic UI Pro is a separate paid license and is not indexed or returned.",
   },
+  {
+    id: "refero-styles" as const,
+    name: "Refero Styles",
+    homepage: "https://styles.refero.design/",
+    specialty: "Official catalog of AI-readable design systems from leading product websites, with colors, typography, spacing, components, and a DESIGN.md for tools such as Cursor and Claude Code. Choose this for visual direction taken from real product sites, not a drop-in component registry.",
+    purpose: "Public Refero Styles pages only: colors, typography, spacing, components, and DESIGN.md from the official catalog. The paid Refero MCP is not called.",
+    licenseName: "Refero Terms of Use",
+    licenseUrl: REFERO_STYLES_TERMS_URL,
+    alsoSee: "https://styles.refero.design/",
+    authEnv: [] as string[],
+    summary: "Public style pages may be used as design reference for an end product. Do not republish the catalog, train models on it, or call the paid Refero MCP. This project does not own Refero Styles.",
+  },
 ];
 
 export function sourceSpecialtyGuide(): string {
@@ -225,6 +240,9 @@ export function createHandlers(deps: Deps = defaultDeps()) {
           }
           if (sourceId === "magic-ui") {
             return (await searchMagicUi(deps.net, input.query, limit)).map((draft) => release(draft));
+          }
+          if (sourceId === "refero-styles") {
+            return (await searchReferoStyles(deps.net, input.query, limit)).map((draft) => release(draft));
           }
           return [];
         } catch (error) {
@@ -334,11 +352,20 @@ export function createHandlers(deps: Deps = defaultDeps()) {
             : MAGIC_UI_LICENSE,
           redistribution: input.itemId && /^(pro|premium|paid):/i.test(input.itemId) ? "forbidden" : "allowed",
         },
+        "refero-styles": {
+          licenseName: "Refero Terms of Use",
+          licenseUrl: REFERO_STYLES_TERMS_URL,
+          termsUrl: REFERO_STYLES_TERMS_URL,
+          attribution: "Refero Inc. owns the Refero Styles catalog. Third-party product names, screenshots, logos, and trademarks stay with their owners. This project does not own that catalog.",
+          notice: REFERO_STYLES_SUMMARY,
+          redistribution: "forbidden",
+        },
       };
       const body = bodies[input.source];
       const tokenRequirement = licenseTokenRequirement(input.source, input.itemId, deps.env.aceternityProToken, deps.env.reactBitsLicenseKey);
       const hardLocked =
         (input.source === "magic-ui" && Boolean(input.itemId && /^(pro|premium|paid):/i.test(input.itemId))) ||
+        (input.source === "refero-styles" && Boolean(input.itemId && /^(pro|premium|paid|mcp):/i.test(input.itemId))) ||
         (input.source === "motionsites" && input.itemId != null && !["official-access", "official-mcp", "membership"].includes(input.itemId));
       const paidLocked = hardLocked || Boolean(tokenRequirement);
       const itemId = input.source === "motionsites" && hardLocked ? null : (input.itemId ?? null);
@@ -383,6 +410,12 @@ export function createHandlers(deps: Deps = defaultDeps()) {
       if (input.source === "motionsites" && /prompt (text|body|source)|paste the prompt|republish the prompt/i.test(input.proposedUse)) {
         status = "blocked";
         reason = "MotionSites prompt text cannot be republished, collected, or returned by this server.";
+      } else if (
+        input.source === "refero-styles" &&
+        /train|fine-?tun|benchmark|dataset|model evaluation|competing (product|catalog|index|library)/i.test(input.proposedUse)
+      ) {
+        status = "blocked";
+        reason = "Refero Terms of Use do not allow using Refero Content to train or evaluate models, build a dataset, or operate a competing catalog.";
       } else if (forbidden && use === "redistribute") {
         status = "blocked";
         reason = "That use redistributes the kit, template, sounds, or source itself. The license does not allow it.";
@@ -447,6 +480,7 @@ async function loadItem(deps: Deps, source: SourceId, id: string, variant?: stri
   if (source === "motion-prompt") return getMotionPromptItem(deps.net, id);
   if (source === "cult-ui") return getCultUiItem(deps.net, id);
   if (source === "magic-ui") return getMagicUiItem(deps.net, id);
+  if (source === "refero-styles") return getReferoStyleItem(deps.net, id);
   throw new Error(`Unknown source: ${source}`);
 }
 

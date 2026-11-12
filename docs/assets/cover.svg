@@ -29,6 +29,6 @@
   <path d="M1320 270 C1280 300, 1260 320, 1230 340" fill="none" stroke="url(#accent)" stroke-width="2" stroke-opacity="0.7"/>
   <text x="96" y="230" fill="#e2e8f0" font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="54" font-weight="700">UI Kit Aggregator MCP</text>
   <rect x="96" y="268" width="220" height="6" rx="3" fill="url(#accent)"/>
-  <text x="96" y="340" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="28">Search eight official catalogs.</text>
+  <text x="96" y="340" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="28">Search nine official catalogs.</text>
   <text x="96" y="384" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="28">Every result goes through a license gate.</text>
 </svg>

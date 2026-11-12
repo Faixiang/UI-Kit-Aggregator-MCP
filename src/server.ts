@@ -8,7 +8,7 @@ const sourceEnum = z.enum(SOURCE_IDS);
 const variantEnum = z.enum(["TS-TW", "TS-CSS", "JS-TW", "JS-CSS", "TS", "JS"]);
 const specialties = sourceSpecialtyGuide();
 const sourceIdHelp =
-  "Limit to these source ids. Default: all eight. motionsites: AI website prompts for landing pages, SaaS, and portfolios; react-bits: React animation components, text effects, and micro-interactions; uiverse: community HTML/CSS/Tailwind/React snippets such as hover effects, buttons, and cards; anime: lightweight JS animation engine for timelines, easing, and any-element animation; aceternity: React/Tailwind components with advanced 3D, parallax, spotlight, aurora, glow, and shader effects; motion-prompt: motion vocabulary and copyable prompts for describing animations, camera moves, and page transitions to AI, not drop-in UI components; cult-ui: distinctive React / shadcn-style UI components from the official Cult UI registry, for copy-and-paste Cult components, not a general animation engine; magic-ui: free React and Tailwind animated components from the official Magic UI MIT catalog only, not Magic UI Pro.";
+  "Limit to these source ids. Default: all nine. motionsites: AI website prompts for landing pages, SaaS, and portfolios; react-bits: React animation components, text effects, and micro-interactions; uiverse: community HTML/CSS/Tailwind/React snippets such as hover effects, buttons, and cards; anime: lightweight JS animation engine for timelines, easing, and any-element animation; aceternity: React/Tailwind components with advanced 3D, parallax, spotlight, aurora, glow, and shader effects; motion-prompt: motion vocabulary and copyable prompts for describing animations, camera moves, and page transitions to AI, not drop-in UI components; cult-ui: distinctive React / shadcn-style UI components from the official Cult UI registry, for copy-and-paste Cult components, not a general animation engine; magic-ui: free React and Tailwind animated components from the official Magic UI MIT catalog only, not Magic UI Pro; refero-styles: official catalog of AI-readable design systems from leading product websites, with DESIGN.md for Cursor and Claude Code. Public pages only; the paid Refero MCP is not fetched.";
 
 function textResult(data: unknown, isError = false) {
   return {
@@ -29,7 +29,7 @@ export function createMcpServer(deps?: Deps): McpServer {
     {
       title: "List UI sources",
       description:
-        `List the eight animation/UI sources with each site's specialty, license summary, and which environment variables unlock paid official registries. Use the specialties to pick a source: ${specialties} Does not return component source or MotionSites prompt text. ${TOKEN_FLOW_INSTRUCTION}`,
+        `List the nine animation/UI sources with each site's specialty, license summary, and which environment variables unlock paid official registries. Use the specialties to pick a source: ${specialties} Does not return component source or MotionSites prompt text. ${TOKEN_FLOW_INSTRUCTION}`,
       annotations: { readOnlyHint: true },
     },
     async () => textResult(handlers.listSources()),
@@ -40,7 +40,7 @@ export function createMcpServer(deps?: Deps): McpServer {
     {
       title: "Search UI kits",
       description:
-        `One-shot search across MotionSites, React Bits, Uiverse, Anime.js, Aceternity UI, Motion Prompt, Cult UI, and Magic UI. Pick a source by specialty: ${specialties} Each hit already passed the license gate and includes compliance, a short blurb, the official URL, and install/use instructions. Filter with sources. This does not return full source; call get_item for one allowed item. ${TOKEN_FLOW_INSTRUCTION}`,
+        `One-shot search across MotionSites, React Bits, Uiverse, Anime.js, Aceternity UI, Motion Prompt, Cult UI, Magic UI, and Refero Styles. Pick a source by specialty: ${specialties} Each hit already passed the license gate and includes compliance, a short blurb, the official URL, and install/use instructions. Filter with sources. This does not return full source; call get_item for one allowed item. ${TOKEN_FLOW_INSTRUCTION}`,
       inputSchema: {
         query: z.string().min(1).describe("What you are building or the component you need, in plain language."),
         sources: z.array(sourceEnum).optional().describe(sourceIdHelp),
@@ -65,7 +65,7 @@ export function createMcpServer(deps?: Deps): McpServer {
     {
       title: "Get one gated item",
       description:
-        `Fetch one official doc excerpt, example, or component source after the license gate. Choose the source by specialty: ${specialties} If the required token or key is already configured, the fetch proceeds when the license otherwise allows it. If the item requires a token or key that is not configured, status is "needs_token" (not "blocked"): the body is omitted and you must tell the user this content needs a token, name the product and env var, and ask whether to configure/add the token or skip the item. Only retry after the user confirms and the token is in place; if they skip, stop and do not fetch. Hard license blocks stay "blocked" with the body omitted: unclear licenses, disallowed scrape or prompt types, MotionSites prompt bodies, Magic UI Pro and other paid catalogs this server does not support. Magic UI Pro is not a missing-token case — do not offer to add a token. Pass intendedUse when the use might be redistribution rather than an end product. ${TOKEN_FLOW_INSTRUCTION}`,
+        `Fetch one official doc excerpt, example, component source, or public DESIGN.md after the license gate. Choose the source by specialty: ${specialties} If the required token or key is already configured, the fetch proceeds when the license otherwise allows it. If the item requires a token or key that is not configured, status is "needs_token" (not "blocked"): the body is omitted and you must tell the user this content needs a token, name the product and env var, and ask whether to configure/add the token or skip the item. Only retry after the user confirms and the token is in place; if they skip, stop and do not fetch. Hard license blocks stay "blocked" with the body omitted: unclear licenses, disallowed scrape or prompt types, MotionSites prompt bodies, Magic UI Pro, Refero Styles paid MCP bodies, and other paid catalogs this server does not support. Magic UI Pro and the paid Refero MCP are not missing-token cases — do not offer to add a token. Pass intendedUse when the use might be redistribution rather than an end product. ${TOKEN_FLOW_INSTRUCTION}`,
       inputSchema: {
         source: sourceEnum.describe(sourceIdHelp),
         id: z.string().min(1).describe("Item id from search_ui_kits."),
@@ -91,7 +91,7 @@ export function createMcpServer(deps?: Deps): McpServer {
     {
       title: "Get license terms",
       description:
-        `Read the license name, URL, attribution, and notice for a source without fetching component or prompt source. Specialties: ${specialties} Use this before copying anything into a repository. If a listed item would need a token that is not configured, sourceAccess is "needs_token" and asks configure-or-skip; Magic UI Pro and similar unsupported catalogs stay blocked. ${TOKEN_FLOW_INSTRUCTION}`,
+        `Read the license name, URL, attribution, and notice for a source without fetching component or prompt source. Specialties: ${specialties} Use this before copying anything into a repository. If a listed item would need a token that is not configured, sourceAccess is "needs_token" and asks configure-or-skip; Magic UI Pro, the paid Refero MCP, and similar unsupported catalogs stay blocked. ${TOKEN_FLOW_INSTRUCTION}`,
       inputSchema: {
         source: sourceEnum.describe(sourceIdHelp),
         itemId: z.string().optional().describe("Optional item id. Pro/starter ids select the paid license text."),

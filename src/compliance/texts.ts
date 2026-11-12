@@ -183,3 +183,14 @@ export const MOTION_PROMPT_TERMS_URL = "https://github.com/showheyohtaki/motion-
 export const CULT_UI_TERMS_URL = "https://github.com/nolly-studio/cult-ui/blob/main/LICENSE.md";
 export const MAGIC_UI_TERMS_URL = "https://github.com/magicuidesign/magicui/blob/main/LICENSE.md";
 export const MAGIC_UI_PRO_TERMS_URL = "https://pro.magicui.design/license";
+export const REFERO_STYLES_TERMS_URL = "https://doc.refero.design/legal/terms-of-use";
+
+export const REFERO_STYLES_SUMMARY = `Summary of the published Refero Terms of Use (https://doc.refero.design/legal/terms-of-use, last updated August 3, 2026). This is not a substitute for that document, and it is not a claim that this project owns Refero Styles.
+
+Refero Inc. owns the Service, including the Refero Styles catalog, its organization, and the DESIGN.md files Refero prepares. Screenshots, logos, trademarks, and product names in a style remain the property of their respective owners. Inclusion does not imply endorsement.
+
+Section 10 allows Refero Content to be used through the Service for lawful design research, inspiration, internal reference, and ordinary product design work permitted by the applicable plan, including commercial end products you design yourself. Refero Content may be included as reference material in presentations, moodboards, and client or internal design work. Unless Refero expressly allows it, you may not resell, redistribute, sublicense, or commercially syndicate that content; scrape, crawl, or systematically extract it outside documented download features; use it to train, fine-tune, evaluate, or improve machine learning models or datasets; remove attribution or source context; or publish it as a standalone library, dataset, or competing catalog.
+
+Section 13: the official Refero MCP at https://api.refero.design/mcp requires a paid Pro, Team, or Lifetime plan and OAuth or a Bearer token. This server does not call that MCP, does not call https://styles.refero.design/api/ (disallowed in the site robots.txt and protected by a bot challenge), and does not collect a Refero token. It reads the public homepage, a matching public collection page when the query names one, and one public /style/{uuid} page.
+
+This project does not own, relicense, or mirror the Refero Styles catalog.`;
