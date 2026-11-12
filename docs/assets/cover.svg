@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="640" viewBox="0 0 1600 640" role="img" aria-label="UI Kit Aggregator MCP">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#162033"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#c4b5fd"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="78%" cy="30%" r="45%">
+      <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#7dd3fc" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="640" fill="url(#bg)"/>
+  <rect width="1600" height="640" fill="url(#glow)"/>
+  <g fill="none" stroke="#94a3b8" stroke-opacity="0.18" stroke-width="1.5">
+    <rect x="1140" y="150" width="180" height="120" rx="18"/>
+    <rect x="1340" y="200" width="180" height="120" rx="18"/>
+    <rect x="1200" y="310" width="180" height="120" rx="18"/>
+  </g>
+  <g fill="#7dd3fc" fill-opacity="0.9">
+    <circle cx="1170" cy="180" r="6"/>
+    <circle cx="1370" cy="230" r="6"/>
+    <circle cx="1230" cy="340" r="6"/>
+  </g>
+  <path d="M1320 210 C1340 220, 1340 240, 1370 260" fill="none" stroke="url(#accent)" stroke-width="2" stroke-opacity="0.7"/>
+  <path d="M1320 270 C1280 300, 1260 320, 1230 340" fill="none" stroke="url(#accent)" stroke-width="2" stroke-opacity="0.7"/>
+  <text x="96" y="230" fill="#e2e8f0" font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="54" font-weight="700">UI Kit Aggregator MCP</text>
+  <rect x="96" y="268" width="220" height="6" rx="3" fill="url(#accent)"/>
+  <text x="96" y="340" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="28">Search eight official catalogs.</text>
+  <text x="96" y="384" fill="#cbd5e1" font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif" font-size="28">Every result goes through a license gate.</text>
+</svg>

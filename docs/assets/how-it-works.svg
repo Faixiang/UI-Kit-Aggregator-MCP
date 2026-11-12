@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-label="How UI Kit Aggregator MCP works">
+  <rect width="1280" height="360" fill="#f8fafc"/>
+  <g font-family="ui-sans-serif, system-ui, Segoe UI, Helvetica, Arial, sans-serif">
+    <rect x="40" y="120" width="200" height="100" rx="18" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="140" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Your request</text>
+    <text x="140" y="194" text-anchor="middle" font-size="14" fill="#475569">Ask the assistant</text>
+
+    <path d="M250 170 H310" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="320" y="120" width="220" height="100" rx="18" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="430" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Search catalogs</text>
+    <text x="430" y="194" text-anchor="middle" font-size="14" fill="#475569">8 official sources</text>
+
+    <path d="M550 170 H610" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="620" y="120" width="220" height="100" rx="18" fill="#0f172a"/>
+    <text x="730" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#e2e8f0">License gate</text>
+    <text x="730" y="194" text-anchor="middle" font-size="14" fill="#cbd5e1">No skip, no silent fail</text>
+
+    <path d="M850 170 H910" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <g>
+      <rect x="920" y="36" width="320" height="56" rx="14" fill="#ecfdf5" stroke="#6ee7b7"/>
+      <text x="1080" y="71" text-anchor="middle" font-size="16" font-weight="700" fill="#047857">allowed — return the body</text>
+      <rect x="920" y="108" width="320" height="56" rx="14" fill="#fffbeb" stroke="#fcd34d"/>
+      <text x="1080" y="143" text-anchor="middle" font-size="16" font-weight="700" fill="#b45309">flagged — keep the notices</text>
+      <rect x="920" y="180" width="320" height="56" rx="14" fill="#fef2f2" stroke="#fca5a5"/>
+      <text x="1080" y="215" text-anchor="middle" font-size="16" font-weight="700" fill="#b91c1c">blocked — omit the body</text>
+      <rect x="920" y="252" width="320" height="56" rx="14" fill="#eff6ff" stroke="#93c5fd"/>
+      <text x="1080" y="287" text-anchor="middle" font-size="16" font-weight="700" fill="#1d4ed8">needs token — ask first</text>
+    </g>
+    <text x="40" y="330" font-size="16" fill="#64748b">The assistant searches first. Content only leaves a tool after the license gate decides.</text>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
+    </marker>
+  </defs>
+</svg>
